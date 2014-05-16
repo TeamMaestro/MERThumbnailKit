@@ -148,7 +148,9 @@
             
             [self presentViewController:viewController animated:YES completion:nil];
         } error:^(NSError *error) {
-            MELogObject(error);
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"Error code %@",@(error.code)] delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil];
+            
+            [alertView show];
         }];
     }
 }

@@ -41,6 +41,9 @@
 #error MERThumbnailKit requires ARC
 #endif
 
+NSString *const MERThumbnailManagerErrorDomain = @"MERThumbnailManagerErrorDomain";
+NSString *const MERThumbnailManagerErrorUserInfoKeyURLResponse = @"MERThumbnailManagerErrorUserInfoKeyURLResponse";
+
 static CGSize const kMERThumbnailManagerDefaultThumbnailSize = {.width=175, .height=175};
 static NSInteger const kMERThumbnailManagerDefaultThumbnailPage = 1;
 static NSTimeInterval const kMERThumbnailManagerDefaultThumbnailTime = 1.0;
@@ -185,6 +188,7 @@ static NSString *const kMERThumbnailManagerThumbnailFileCacheDirectoryName = @"t
 #pragma mark NSURLSessionTaskDelegate
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
     if (error) {
+        MELogObject(error);
         id<RACSubscriber> subscriber = task.originalRequest.MER_subscriber;
         
         [subscriber sendError:error];
@@ -205,13 +209,20 @@ static NSString *const kMERThumbnailManagerThumbnailFileCacheDirectoryName = @"t
 }
 - (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location {
     id<RACSubscriber> subscriber = downloadTask.originalRequest.MER_subscriber;
-    NSURL *url = [self downloadedFileCacheURLForURL:downloadTask.originalRequest.URL];
+    NSInteger statusCode = [(NSHTTPURLResponse *)downloadTask.response statusCode];
     
-    [[NSFileManager defaultManager] removeItemAtURL:url error:NULL];
-    [[NSFileManager defaultManager] moveItemAtURL:location toURL:url error:NULL];
-    
-    [subscriber sendNext:RACTuplePack(downloadTask.originalRequest.URL,url,@(MERThumbnailManagerCacheTypeNone))];
-    [subscriber sendCompleted];
+    if (statusCode <= 299 && statusCode >= 200) {
+        NSURL *url = [self downloadedFileCacheURLForURL:downloadTask.originalRequest.URL];
+        
+        [[NSFileManager defaultManager] removeItemAtURL:url error:NULL];
+        [[NSFileManager defaultManager] moveItemAtURL:location toURL:url error:NULL];
+        
+        [subscriber sendNext:RACTuplePack(downloadTask.originalRequest.URL,url,@(MERThumbnailManagerCacheTypeNone))];
+        [subscriber sendCompleted];
+    }
+    else {
+        [subscriber sendError:[NSError errorWithDomain:MERThumbnailManagerErrorDomain code:statusCode userInfo:@{MERThumbnailManagerErrorUserInfoKeyURLResponse: downloadTask.response}]];
+    }
 }
 #pragma mark UIWebViewDelegate
 

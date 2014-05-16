@@ -46,6 +46,15 @@ typedef NS_OPTIONS(NSInteger, MERThumbnailManagerCacheOptions) {
 
 typedef void(^MERThumbnailManagerDownloadProgressBlock)(NSURL *url, int64_t totalBytesWritten, int64_t totalBytesExpectedToWrite);
 
+/**
+ The error domain for `MERThumbnailManager` errors.
+ */
+extern NSString *const MERThumbnailManagerErrorDomain;
+/**
+ The `NSURLResponse` of the `NSURLSessionTask` that generated the error.
+ */
+extern NSString *const MERThumbnailManagerErrorUserInfoKeyURLResponse;
+
 @class RACSignal;
 
 /**
