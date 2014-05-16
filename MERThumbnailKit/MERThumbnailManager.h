@@ -82,9 +82,11 @@ extern NSString *const MERThumbnailManagerErrorUserInfoKeyURLResponse;
 @property (readonly,nonatomic,getter = isMemoryCachingEnabled) BOOL memoryCachingEnabled;
 
 /**
- Returns the directory url used for downloaded file caching.
+ Returns the directory url used for downloaded file caching. The directory will be created if it does not exist.
+ 
+ The default is `Caches/MERThumbnailKitBundleIdentifier/downloads`.
  */
-@property (readonly,strong,nonatomic) NSURL *downloadedFileCacheDirectoryURL;
+@property (copy,nonatomic) NSURL *downloadedFileCacheDirectoryURL;
 /**
  Returns the directory url used for thumbnail file caching.
  */

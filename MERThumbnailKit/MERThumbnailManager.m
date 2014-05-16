@@ -57,7 +57,6 @@ static NSString *const kMERThumbnailManagerThumbnailFileCacheDirectoryName = @"t
 @interface MERThumbnailManager () <NSCacheDelegate,NSURLSessionDownloadDelegate,NSURLSessionDataDelegate>
 #endif
 
-@property (readwrite,strong,nonatomic) NSURL *downloadedFileCacheDirectoryURL;
 @property (readwrite,strong,nonatomic) NSURL *thumbnailFileCacheDirectoryURL;
 
 @property (strong,nonatomic) NSCache *memoryCache;
@@ -123,12 +122,6 @@ static NSString *const kMERThumbnailManagerThumbnailFileCacheDirectoryName = @"t
     
     NSURL *downloadedFileCacheDirectoryURL = [fileCacheDirectoryURL URLByAppendingPathComponent:kMERThumbnailManagerDownloadFileCacheDirectoryName isDirectory:YES];
     
-    if (![downloadedFileCacheDirectoryURL checkResourceIsReachableAndReturnError:NULL]) {
-        NSError *outError;
-        if (![[NSFileManager defaultManager] createDirectoryAtURL:downloadedFileCacheDirectoryURL withIntermediateDirectories:YES attributes:nil error:&outError])
-            MELogObject(outError);
-    }
-    
     [self setDownloadedFileCacheDirectoryURL:downloadedFileCacheDirectoryURL];
     
     NSURL *thumbnailFileCacheDirectoryURL = [fileCacheDirectoryURL URLByAppendingPathComponent:kMERThumbnailManagerThumbnailFileCacheDirectoryName isDirectory:YES];
@@ -162,9 +155,22 @@ static NSString *const kMERThumbnailManagerThumbnailFileCacheDirectoryName = @"t
     [self.remoteThumbnailUrlConnectionDelegateOperationQueue setName:[NSString stringWithFormat:@"%@.%p",MERThumbnailKitBundleIdentifier,self]];
     [self.remoteThumbnailUrlConnectionDelegateOperationQueue setMaxConcurrentOperationCount:[NSProcessInfo processInfo].activeProcessorCount];
     
-#if (TARGET_OS_IPHONE)
     @weakify(self);
     
+    [[[RACObserve(self, downloadedFileCacheDirectoryURL)
+      distinctUntilChanged]
+      map:^id(id value) {
+          return (value) ?: downloadedFileCacheDirectoryURL;
+    }]
+     subscribeNext:^(NSURL *value) {
+         if (![value checkResourceIsReachableAndReturnError:NULL]) {
+             NSError *outError;
+             if (![[NSFileManager defaultManager] createDirectoryAtURL:value withIntermediateDirectories:YES attributes:nil error:&outError])
+                 MELogObject(outError);
+         }
+    }];
+    
+#if (TARGET_OS_IPHONE)
     [[[[NSNotificationCenter defaultCenter]
        rac_addObserverForName:UIApplicationDidReceiveMemoryWarningNotification object:nil]
       takeUntil:[self rac_willDeallocSignal]]
