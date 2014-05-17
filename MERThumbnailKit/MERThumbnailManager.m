@@ -461,7 +461,7 @@ static NSString *const kMERThumbnailManagerThumbnailFileCacheDirectoryName = @"t
         }
         
         return nil;
-    }] flattenMap:^RACStream *(RACTuple *value) {
+    }] doNext:^(RACTuple *value) {
         @strongify(self);
         
         RACTupleUnpack(NSURL *url, MERThumbnailKitImageClass *image, NSNumber *cacheType) = value;
@@ -483,8 +483,6 @@ static NSString *const kMERThumbnailManagerThumbnailFileCacheDirectoryName = @"t
                     break;
             }
         }
-        
-        return [RACSignal return:value];
     }];
 }
 
