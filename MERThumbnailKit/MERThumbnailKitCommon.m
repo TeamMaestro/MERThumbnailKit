@@ -19,7 +19,7 @@ NSString *const MERThumbnailKitBundleIdentifier = @"com.maestro.merthumbnailkit"
 const struct MERThumbnailKitVersion MERThumbnailKitVersion = {
     .major = 2,
     .minor = 2,
-    .patch = 4
+    .patch = 8
 };
 
 NSString *const MERThumbnailKitResourcesBundleName = @"MERThumbnailKitResources.bundle";
