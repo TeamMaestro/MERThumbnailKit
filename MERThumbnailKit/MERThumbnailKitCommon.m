@@ -30,7 +30,9 @@ NSBundle *MERThumbnailKitResourcesBundle() {
 @implementation MERThumbnailKitCommon
 
 + (void)load {
-    MELogObject([self versionString]);
+    if (self == [MERThumbnailKitCommon class]) {
+        MELogObject([self versionString]);
+    }
 }
 
 + (NSString *)versionString; {
