@@ -155,8 +155,6 @@ static NSString *const kMERThumbnailManagerThumbnailFileCacheDirectoryName = @"t
     [self.remoteThumbnailUrlConnectionDelegateOperationQueue setName:[NSString stringWithFormat:@"%@.%p",MERThumbnailKitBundleIdentifier,self]];
     [self.remoteThumbnailUrlConnectionDelegateOperationQueue setMaxConcurrentOperationCount:[NSProcessInfo processInfo].activeProcessorCount];
     
-    @weakify(self);
-    
     [[[RACObserve(self, downloadedFileCacheDirectoryURL)
       distinctUntilChanged]
       map:^id(id value) {
@@ -171,6 +169,8 @@ static NSString *const kMERThumbnailManagerThumbnailFileCacheDirectoryName = @"t
     }];
     
 #if (TARGET_OS_IPHONE)
+    @weakify(self);
+    
     [[[[NSNotificationCenter defaultCenter]
        rac_addObserverForName:UIApplicationDidReceiveMemoryWarningNotification object:nil]
       takeUntil:[self rac_willDeallocSignal]]
