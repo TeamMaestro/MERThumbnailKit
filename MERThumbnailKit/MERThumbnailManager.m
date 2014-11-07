@@ -107,7 +107,8 @@ static NSString *const kMERThumbnailManagerThumbnailFileCacheDirectoryName = @"t
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (id)init {
+
+- (instancetype)initWithSessionConfiguration:(NSURLSessionConfiguration *)sessionConfiguration; {
     if (!(self = [super init]))
         return nil;
     
@@ -149,24 +150,24 @@ static NSString *const kMERThumbnailManagerThumbnailFileCacheDirectoryName = @"t
     [self setWebViewThumbnailQueue:dispatch_queue_create([NSString stringWithFormat:@"%@.webview.%p",MERThumbnailKitBundleIdentifier,self].UTF8String, DISPATCH_QUEUE_CONCURRENT)];
 #endif
     
-    [self setUrlSession:[NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration] delegate:self delegateQueue:nil]];
+    [self setUrlSession:[NSURLSession sessionWithConfiguration:sessionConfiguration delegate:self delegateQueue:nil]];
     
     [self setRemoteThumbnailUrlConnectionDelegateOperationQueue:[[NSOperationQueue alloc] init]];
     [self.remoteThumbnailUrlConnectionDelegateOperationQueue setName:[NSString stringWithFormat:@"%@.%p",MERThumbnailKitBundleIdentifier,self]];
     [self.remoteThumbnailUrlConnectionDelegateOperationQueue setMaxConcurrentOperationCount:[NSProcessInfo processInfo].activeProcessorCount];
     
     [[[RACObserve(self, downloadedFileCacheDirectoryURL)
-      distinctUntilChanged]
+       distinctUntilChanged]
       map:^id(id value) {
           return (value) ?: downloadedFileCacheDirectoryURL;
-    }]
+      }]
      subscribeNext:^(NSURL *value) {
          if (![value checkResourceIsReachableAndReturnError:NULL]) {
              NSError *outError;
              if (![[NSFileManager defaultManager] createDirectoryAtURL:value withIntermediateDirectories:YES attributes:nil error:&outError])
                  MELogObject(outError);
          }
-    }];
+     }];
     
 #if (TARGET_OS_IPHONE)
     @weakify(self);
@@ -178,11 +179,16 @@ static NSString *const kMERThumbnailManagerThumbnailFileCacheDirectoryName = @"t
          @strongify(self);
          
          [self clearThumbnailMemoryCache];
-    }];
+     }];
 #endif
     
     return self;
 }
+
+- (id)init {
+    return [self initWithSessionConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]];
+}
+
 #pragma mark NSCacheDelegate
 - (void)cache:(NSCache *)cache willEvictObject:(id)obj {
     MELog(@"%@ %@",cache,obj);

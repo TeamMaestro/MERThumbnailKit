@@ -119,6 +119,12 @@ extern NSString *const MERThumbnailManagerErrorUserInfoKeyURLResponse;
 + (instancetype)sharedManager;
 
 /**
+ Returns a new thumbnail manager with the given NSURLSessionConfiguration
+ */
+- (instancetype)initWithSessionConfiguration:(NSURLSessionConfiguration *)sessionConfiguration;
+
+
+/**
  Clears the downloaded file cache.
  */
 - (void)clearDownloadedFileCache;
