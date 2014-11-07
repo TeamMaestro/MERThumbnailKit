@@ -1,7 +1,7 @@
 Pod::Spec.new do |spec|
   spec.name = "MERThumbnailKit"
-  spec.version = "2.2.9"
-  spec.authors = {"William Towe" => "willbur1984@gmail.com"}
+  spec.version = "2.2.10"
+  spec.authors = {"William Towe" => "willbur1984@gmail.com", "Norm Barnard" => "norm@meetmaestro.com"}
   spec.license = {:type => "MIT", :file => "LICENSE.txt"}
   spec.homepage = "https://github.com/MaestroElearning/MERThumbnailKit"
   spec.source = {:git => "https://github.com/MaestroElearning/MERThumbnailKit.git", :tag => spec.version.to_s}
