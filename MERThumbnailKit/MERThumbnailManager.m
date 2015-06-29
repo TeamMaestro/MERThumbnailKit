@@ -327,7 +327,7 @@ static NSString *const kMERThumbnailManagerThumbnailFileCacheDirectoryName = @"t
     NSParameterAssert(url);
     
 #if (TARGET_OS_IPHONE)
-    return [NSString stringWithFormat:@"%@%@%@",url.absoluteString.ME_MD5String,NSStringFromCGSize(size),@(page)];
+    return [NSString stringWithFormat:@"%@%@%@",url.lastPathComponent.ME_MD5String,NSStringFromCGSize(size),@(page)];
 #else
     return [NSString stringWithFormat:@"%@%@%@",url.absoluteString.ME_MD5String,NSStringFromSize(NSSizeFromCGSize(size)),@(page)];
 #endif
