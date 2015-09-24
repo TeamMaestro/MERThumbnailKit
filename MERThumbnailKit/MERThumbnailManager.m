@@ -667,7 +667,8 @@ static NSString *const kMERThumbnailManagerThumbnailFileCacheDirectoryName = @"t
         
         int32_t const kPreferredTimeScale = 1;
         
-        CGImageRef imageRef = [assetImageGenerator copyCGImageAtTime:CMTimeMakeWithSeconds(time, kPreferredTimeScale) actualTime:NULL error:NULL];
+        NSError *error;
+        CGImageRef imageRef = [assetImageGenerator copyCGImageAtTime:CMTimeMakeWithSeconds(time, kPreferredTimeScale) actualTime:NULL error:&error];
         
         if (error) {
             [subscriber sendError:error];
