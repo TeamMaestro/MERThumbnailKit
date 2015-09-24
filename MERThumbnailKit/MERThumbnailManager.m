@@ -668,6 +668,12 @@ static NSString *const kMERThumbnailManagerThumbnailFileCacheDirectoryName = @"t
         int32_t const kPreferredTimeScale = 1;
         
         CGImageRef imageRef = [assetImageGenerator copyCGImageAtTime:CMTimeMakeWithSeconds(time, kPreferredTimeScale) actualTime:NULL error:NULL];
+        
+        if (error) {
+            [subscriber sendError:error];
+            return nil;
+        }
+        
         CGImageRef sourceImageRef = MERThumbnailKitCreateCGImageThumbnailWithSize(imageRef, size);
 #if (TARGET_OS_IPHONE)
         MERThumbnailKitImageClass *retval = [[MERThumbnailKitImageClass alloc] initWithCGImage:sourceImageRef];
