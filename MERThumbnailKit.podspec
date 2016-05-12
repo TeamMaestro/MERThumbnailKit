@@ -22,6 +22,6 @@ Pod::Spec.new do |spec|
   spec.source_files = "MERThumbnailKit", "MERThumbnailKitFramework", "MERThumbnailKit/Private"
   spec.ios.exclude_files = "MERThumbnailKitFramework"
   spec.osx.exclude_files = "MERThumbnailKit/UI*", "MERThumbnailKit/Private/UI*"
-  spec.private_header_files = "MERThumbnailKit/Private"
+  spec.private_header_files = "MERThumbnailKit/Private/**/*.h"
   spec.resource_bundles = {"MERThumbnailKitResources" => ["MERThumbnailKitResources/*.plist", "MERThumbnailKitResources/*.js"]}
 end
