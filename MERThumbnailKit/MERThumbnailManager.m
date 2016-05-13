@@ -15,6 +15,7 @@
 #import "MEFunctions.h"
 #import "MEMacros.h"
 #import "NSString+MEExtensions.h"
+#import "NSBundle+MEExtensions.h"
 
 #import "MERThumbnailManager.h"
 #import "MERThumbnailKitCommon.h"
