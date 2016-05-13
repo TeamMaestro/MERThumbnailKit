@@ -22,9 +22,8 @@ const struct MERThumbnailKitVersion MERThumbnailKitVersion = {
     .patch = 8
 };
 
-NSString *const MERThumbnailKitResourcesBundleName = @"MERThumbnailKitResources.bundle";
 NSBundle *MERThumbnailKitResourcesBundle() {
-    return [NSBundle bundleWithURL:[[NSBundle mainBundle] URLForResource:MERThumbnailKitResourcesBundleName.stringByDeletingPathExtension withExtension:MERThumbnailKitResourcesBundleName.pathExtension]];
+	return [NSBundle bundleForClass:[MERThumbnailKitCommon class]];
 }
 
 @implementation MERThumbnailKitCommon

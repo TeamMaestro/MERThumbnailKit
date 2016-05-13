@@ -28,10 +28,6 @@ extern const struct MERThumbnailKitVersion {
 } MERThumbnailKitVersion;
 
 /**
- The name of the library resources bundle.
- */
-extern NSString *const MERThumbnailKitResourcesBundleName;
-/**
  Returns the `NSBundle` instance containing the resources for the library.
  */
 extern NSBundle *MERThumbnailKitResourcesBundle();
